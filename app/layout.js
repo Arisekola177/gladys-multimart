@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
   return (
       <html lang='en'>
           <body>
-              <main className='text-darkText'>
+              <main className='text-darkText bg-slate-100'>
                   
                  <Layout>
                  <Navbar />

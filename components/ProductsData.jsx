@@ -4,10 +4,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FormattedPrice from './FormattedPrice'
 import { FaStar } from 'react-icons/fa'
+import { useDispatch } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import { addToCart } from "@/redux/gladysSlice";
 
 
 
 const ProductsData = ({product}) => {
+    // add items to cart with dispatch
+    const dispatch = useDispatch()
+   
     const startArray = Array.from({ length: product.rating }, (_, index) => (
         <span key={index} className="text-yellow-400">
           <FaStar />
@@ -18,7 +24,7 @@ const ProductsData = ({product}) => {
 
     <div className="w-full rounded-lg overflow-hidden">
         <div className=''>
-            <Link href={{pathname: '/product', query: {_id:product._id}}}>
+        <Link href={{ pathname: "/product", query: { _id: product._id } }}>
             <div className='w-full h-96 group relative   overflow-hidden'>
             <Image src={product.image}  alt='product image' width={500} height={500} className='w-full h-full object-cover group-hover:scale-110 duration-200 rounded-t-lg' />
             {
@@ -38,7 +44,13 @@ const ProductsData = ({product}) => {
                     </div>
                 </div>
                 <div className='mt-2 flex justify-between items-center'>
-                <button className='bg-orange-600 text-xs border-[1px] tracking-wide rounded-full text-white py-2 px-4 hover:bg-white hover:text-black'>  Add to Cart </button>
+                <button className='bg-orange-600 text-xs border-[1px] tracking-wide rounded-full text-white py-2 px-4 hover:bg-white hover:text-black'
+                  onClick={() => dispatch(addToCart(product)) &&
+                    toast.success(
+                      `${product.title.substring(0, 15)} added successfully!`
+                    )}
+                > 
+                 Add to Cart </button>
                 <div className='flex items-center gap-1'>
                    {startArray}
                 </div>
@@ -49,6 +61,7 @@ const ProductsData = ({product}) => {
            
           
         </div>
+        <Toaster />
     </div>
   )
 }

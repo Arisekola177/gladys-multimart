@@ -6,13 +6,42 @@ import {FiSearch} from 'react-icons/fi'
 import {useSession, signIn, signOut} from 'next-auth/react'
 import {FiLogOut} from 'react-icons/fi'
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect, useState } from "react"
+import FormattedPrice from "./FormattedPrice"
+import { addUser, deleteUser } from "@/redux/gladysSlice"
 
 
 
 const Navbar = () => {
+  const dispatch = useDispatch()
  const {data:session} = useSession()
+ const productData = useSelector((state) => state.gladys.productData);
 
- 
+ const [totalAmt, setTotalAmt] = useState(0);
+
+ useEffect(()=> {
+  if(session){
+    dispatch(addUser({
+      name: session.user.name,
+      email: session.user.email,
+      image: session.user.image,
+    } ))
+  } else {
+    dispatch(deleteUser())
+  }
+ },[session, dispatch])
+
+  useEffect(() => {
+    let amt = 0;
+    productData.map((item) => {
+      amt += item.price * item.quantity;
+      return;
+    });
+    setTotalAmt(amt);
+    
+  }, [productData]);
+
     
   return (
     <div className='w-full font-satoshi bg-slate-500 bg-body top-0 sticky z-50'>
@@ -43,13 +72,19 @@ const Navbar = () => {
             )}
 
                 {/* Cart div */}
-                <div className="relative bg-black border rounded-xl py-2 px-4 text-white hover:bg-transparent hover:text-black">
+        <Link href='/cart'>
+        <div className="relative bg-black border rounded-xl py-2 px-4 text-white hover:bg-transparent hover:text-black">
                     <button className="text-sm flex justify-between items-center gap-3 cursor-pointer">
                         <p><FaShoppingCart /></p> 
-                       <p>N0.000</p> 
+                       <p>
+                       <FormattedPrice amount={totalAmt ? totalAmt : 0} />
+                        </p> 
                     </button>
-                    <span className="absolute bg-white text-orange-600 shadow-xl shadow-black  font-semibold rounded-full text-sm -top-[15px] right-[0] p-1">0</span>
+                    <span className="absolute bg-white text-orange-600 shadow-xl shadow-black font-semibold rounded-full text-sm -top-[20px] right-[0] p-1">
+                       {productData ? productData.length : 0}
+                     </span>
                 </div>
+        </Link>
 
                     {/*  user Image */}
             {session && (

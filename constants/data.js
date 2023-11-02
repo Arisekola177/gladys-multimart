@@ -1,4 +1,4 @@
-export const productData = [
+ export const productData = [
     {
       _id: 1,
       title: "Long sleeve Jacket",
@@ -338,4 +338,10 @@ export const productData = [
       quantity: 1,
     },
   ];
+
+
   
+
+
+
+
